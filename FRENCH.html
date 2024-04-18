@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kapitel 8</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            color: white;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #3a7bd5, #004568);
+            background-attachment: fixed;
+        }
+        #word {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            justify-content: center;
+        }
+        .option {
+            margin: 0 10px;
+            padding: 10px 20px;
+            background-color: #4d88ff;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            color: white;
+            outline: none;
+        }
+        .option:hover {
+            background-color: #3666cc;
+        }
+        #redoBtn {
+            display: none;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #4d88ff;
+            border: 2px solid white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+            color: white;
+            outline: none;
+        }
+        #redoBtn:hover {
+            background-color: #3666cc;
+        }
+    </style>
+</head>
+<body>
+    <h1>Kapitel 8:</h1>
+    <div id="word">Bonjour</div>
+    <div class="options" id="optionsContainer">
+        <div class="option" onclick="checkAnswer(this)"></div>
+        <div class="option" onclick="checkAnswer(this)"></div>
+        <div class="option" onclick="checkAnswer(this)"></div>
+    </div>
+    <div>
+        <button id="redoBtn" onclick="restartGame()">Redo</button>
+    </div>
+    <div id="score"></div>
+
+    <script>
+        const words = [
+            { french: "Un appartement", english: "en lägenhet" },
+            { french: "Au bord de la mer", english: "vid havet" },
+            { french: "Inquiets", english: "oroliga" },
+            { french: "Il ne sort pas (sortir)", english: "han går inte ut" },
+            { french: "De sa chambre", english: "ur sitt rum" },
+            { french: "Il ne mange pas", english: "han äter inte" },
+            { french: "Il ne parle avec personne", english: "han pratar inte med någon" },
+            { french: "Il nest pas sur les reseaux sociaux", english: "han är inte på sociala medier" },
+            { french: "Seulement", english: "bara" },
+            { french: "Viens (venir)", english: "kom" },
+            { french: "Mettre la table", english: "duka bordet" },
+            { french: "Quest-ce que tu as", english: "vad är det med dig" },
+            { french: "Tu as mauvaise mine", english: "du ser sjuk ut" },
+            { french: "Avoir mal", english: "ha ont" },
+            { french: "Quelque part", english: "någonstans" },
+            { french: "Peut-etre", english: "kanske" },
+            { french: "Avoir de la fievre", english: "ha feber" },
+            { french: "Tout pale", english: "helt blek" },
+            { french: "Tu veux", english: "vill du ha" },
+            { french: "Quelque chose a manger", english: "något att äta" },
+            { french: "Une asperine", english: "en huvudvärkstabblet" },
+            { french: "Arret", english: "sluta" },
+            { french: "Je ne veux rien", english: "jag vill inte ha något" },
+            { french: "Je vais bien", english: "Jag mår bra" },
+            { french: "Laisse moi tranquille", english: "låt mig vara i fred" },
+            { french: "allo", english: "hallå" }
+        ];
+
+        let currentWordIndex = 0;
+        let currentWord = words[currentWordIndex];
+        let correctAnswers = 0;
+
+        function nextWord() {
+            if (currentWordIndex === words.length - 1) {
+                document.getElementById("optionsContainer").style.display = "none";
+                document.getElementById("redoBtn").style.display = "inline-block";
+                document.getElementById("score").textContent = "Score: " + correctAnswers + "/" + words.length;
+            } else {
+                currentWordIndex++;
+                currentWord = words[currentWordIndex];
+                document.getElementById("word").textContent = currentWord.french;
+                updateOptions();
+            }
+        }
+
+        function updateOptions() {
+            const optionsContainer = document.getElementById("optionsContainer");
+            const options = Array.from(optionsContainer.children);
+            const correctOptionIndex = Math.floor(Math.random() * options.length);
+            options.forEach((option, index) => {
+                if (index === correctOptionIndex) {
+                    option.textContent = currentWord.english;
+                } else {
+                    // Get a random word from the list (excluding the correct translation)
+                    let randomIndex = Math.floor(Math.random() * words.length);
+                    while (words[randomIndex].english === currentWord.english) {
+                        randomIndex = Math.floor(Math.random() * words.length);
+                    }
+                    option.textContent = words[randomIndex].english;
+                }
+            });
+        }
+
+        function checkAnswer(option) {
+            if (option.textContent === currentWord.english) {
+                correctAnswers++;
+            }
+            nextWord();
+        }
+
+        function restartGame() {
+            currentWordIndex = 0;
+            currentWord = words[currentWordIndex];
+            correctAnswers = 0;
+            document.getElementById("optionsContainer").style.display = "flex";
+            document.getElementById("redoBtn").style.display = "none";
+            document.getElementById("score").textContent = "";
+            document.getElementById("word").textContent = currentWord.french;
+            updateOptions();
+        }
+
+        // Initial word display
+        document.getElementById("word").textContent = currentWord.french;
+        updateOptions();
+    </script>
+</body>
+</html>
